@@ -16,7 +16,7 @@ import wave
 from twilio.rest import Client
 
 # OpenAI API Key
-OPENAI_API_KEY = "your_openai_api_key"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
 # Twilio API Credentials
@@ -99,7 +99,7 @@ def send_email(to_email, subject, body):
         print("Email sent successfully!")
     except Exception as e:
         print("Error sending email:", e)
-# reminders = []
+
 def set_reminder(task, time):
     reminders.append((task, time))
     print(f"Reminder set: {task} at {time}")
@@ -134,50 +134,6 @@ def continuous_listening():
 def auto_schedule_meeting(title, time):
     print(f"Auto-scheduling meeting: {title} at {time}")
     reminders.append((title, time))
-    
-
-def record_screen(output_filename="screen_record.avi", duration=10):
-    screen_size = pyautogui.size()
-    fourcc = cv2.VideoWriter_fourcc(*"XVID")
-    out = cv2.VideoWriter(output_filename, fourcc, 20.0, screen_size)
-    
-    for _ in range(20 * duration):  # Capture at 20 FPS for 'duration' seconds
-        img = pyautogui.screenshot()
-        frame = np.array(img)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        out.write(frame)
-    
-    out.release()
-    print(f"Screen recording saved as {output_filename}")
-
-def record_audio(output_filename="audio_record.wav", duration=10):
-    chunk = 1024  # Record in chunks of 1024 samples
-    format = pyaudio.paInt16
-    channels = 1
-    rate = 44100  # Sample rate
-    p = pyaudio.PyAudio()
-    
-    stream = p.open(format=format, channels=channels,
-                    rate=rate, input=True,
-                    frames_per_buffer=chunk)
-    print("Recording Audio...")
-    frames = []
-    
-    for _ in range(0, int(rate / chunk * duration)):
-        data = stream.read(chunk)
-        frames.append(data)
-    
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-    
-    wf = wave.open(output_filename, 'wb')
-    wf.setnchannels(channels)
-    wf.setsampwidth(p.get_sample_size(format))
-    wf.setframerate(rate)
-    wf.writeframes(b''.join(frames))
-    wf.close()
-    print(f"Audio recording saved as {output_filename}")
 
 def process_command(user_input):
     if user_input.startswith("send whatsapp"):
@@ -190,9 +146,33 @@ def process_command(user_input):
         control_system(user_input)
     elif user_input == "read emails":
         read_emails()
-    elif user_input.startswith("record screen"):
-        record_screen()
-    elif user_input.startswith("record audio"):
-        record_audio()
+    elif user_input.startswith("send email"):
+        _, to_email, subject, body = user_input.split(" ", 3)
+        send_email(to_email, subject, body)
+    elif user_input.startswith("set reminder"):
+        _, task, time = user_input.split(" ", 2)
+        set_reminder(task, time)
     else:
         print("Command not recognized.")
+
+def main():
+    global reminders
+    reminders = []
+    listening_thread = threading.Thread(target=continuous_listening, daemon=True)
+    listening_thread.start()
+    
+    while True:
+        check_reminders()
+        user_input = input("NeoAssist > Type or say 'voice' to use voice commands: ").strip().lower()
+        
+        if user_input == "voice":
+            user_input = recognize_voice()
+        
+        if user_input in ["exit", "quit"]:
+            print("Exiting NeoAssist...")
+            break
+        else:
+            process_command(user_input)
+
+if __name__ == "__main__":
+    main()
