@@ -26,6 +26,7 @@ TWILIO_WHATSAPP_NUMBER = "whatsapp:+your_twilio_number"
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
+reminders = []
 def send_whatsapp_message(to_number, message):
     try:
         message = client.messages.create(
@@ -98,7 +99,7 @@ def send_email(to_email, subject, body):
         print("Email sent successfully!")
     except Exception as e:
         print("Error sending email:", e)
-
+# reminders = []
 def set_reminder(task, time):
     reminders.append((task, time))
     print(f"Reminder set: {task} at {time}")
@@ -133,6 +134,7 @@ def continuous_listening():
 def auto_schedule_meeting(title, time):
     print(f"Auto-scheduling meeting: {title} at {time}")
     reminders.append((title, time))
+    
 
 def record_screen(output_filename="screen_record.avi", duration=10):
     screen_size = pyautogui.size()
