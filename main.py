@@ -6,6 +6,36 @@ import email
 from email.mime.text import MIMEText
 import datetime
 import speech_recognition as sr
+import openai
+import threading
+import pyautogui
+import cv2
+import numpy as np
+import pyaudio
+import wave
+from twilio.rest import Client
+
+# OpenAI API Key
+OPENAI_API_KEY = "your_openai_api_key"
+openai.api_key = OPENAI_API_KEY
+
+# Twilio API Credentials
+TWILIO_ACCOUNT_SID = "your_twilio_account_sid"
+TWILIO_AUTH_TOKEN = "your_twilio_auth_token"
+TWILIO_WHATSAPP_NUMBER = "whatsapp:+your_twilio_number"
+
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+def send_whatsapp_message(to_number, message):
+    try:
+        message = client.messages.create(
+            from_=TWILIO_WHATSAPP_NUMBER,
+            body=message,
+            to=f"whatsapp:{to_number}"
+        )
+        print(f"WhatsApp message sent successfully! Message SID: {message.sid}")
+    except Exception as e:
+        print("Error sending WhatsApp message:", e)
 
 def open_application(app_name):
     if app_name.lower() == "notepad":
@@ -27,6 +57,14 @@ def control_system(command):
     else:
         print("Unknown system command.")
 
+def summarize_email(body):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=f"Summarize this email: {body}",
+        max_tokens=50
+    )
+    return response.choices[0].text.strip()
+
 def read_emails():
     try:
         mail = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -38,7 +76,9 @@ def read_emails():
         for num in email_ids[-5:]:  # Read last 5 unread emails
             _, data = mail.fetch(num, "(RFC822)")
             msg = email.message_from_bytes(data[0][1])
-            print(f"From: {msg['from']}, Subject: {msg['subject']}")
+            body = msg.get_payload(decode=True).decode(errors="ignore")
+            summary = summarize_email(body)
+            print(f"From: {msg['from']}, Subject: {msg['subject']}, Summary: {summary}")
         
         mail.logout()
     except Exception as e:
@@ -84,40 +124,73 @@ def recognize_voice():
             print("Could not request results. Check your internet connection.")
     return ""
 
-def main():
-    global reminders
-    reminders = []
+def continuous_listening():
     while True:
-        check_reminders()
-        user_input = input("NeoAssist > Type or say 'voice' to use voice commands: ").strip().lower()
-        
-        if user_input == "voice":
-            user_input = recognize_voice()
-        
-        if user_input in ["exit", "quit"]:
-            print("Exiting NeoAssist...")
-            break
-        elif user_input.startswith("open "):
-            app_name = user_input[5:]
-            open_application(app_name)
-        elif user_input in ["shutdown", "restart", "logout"]:
-            control_system(user_input)
-        elif user_input == "read emails":
-            read_emails()
-        elif user_input.startswith("send email "):
-            parts = user_input[11:].split(",")
-            if len(parts) == 3:
-                send_email(parts[0].strip(), parts[1].strip(), parts[2].strip())
-            else:
-                print("Invalid format. Use: send email recipient, subject, body")
-        elif user_input.startswith("remind me "):
-            parts = user_input[10:].split(" at ")
-            if len(parts) == 2:
-                set_reminder(parts[0].strip(), parts[1].strip())
-            else:
-                print("Invalid format. Use: remind me Task at HH:MM")
-        else:
-            print("Command not recognized.")
+        command = recognize_voice()
+        if command:
+            process_command(command)
 
-if __name__ == "__main__":
-    main()
+def auto_schedule_meeting(title, time):
+    print(f"Auto-scheduling meeting: {title} at {time}")
+    reminders.append((title, time))
+
+def record_screen(output_filename="screen_record.avi", duration=10):
+    screen_size = pyautogui.size()
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    out = cv2.VideoWriter(output_filename, fourcc, 20.0, screen_size)
+    
+    for _ in range(20 * duration):  # Capture at 20 FPS for 'duration' seconds
+        img = pyautogui.screenshot()
+        frame = np.array(img)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        out.write(frame)
+    
+    out.release()
+    print(f"Screen recording saved as {output_filename}")
+
+def record_audio(output_filename="audio_record.wav", duration=10):
+    chunk = 1024  # Record in chunks of 1024 samples
+    format = pyaudio.paInt16
+    channels = 1
+    rate = 44100  # Sample rate
+    p = pyaudio.PyAudio()
+    
+    stream = p.open(format=format, channels=channels,
+                    rate=rate, input=True,
+                    frames_per_buffer=chunk)
+    print("Recording Audio...")
+    frames = []
+    
+    for _ in range(0, int(rate / chunk * duration)):
+        data = stream.read(chunk)
+        frames.append(data)
+    
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    
+    wf = wave.open(output_filename, 'wb')
+    wf.setnchannels(channels)
+    wf.setsampwidth(p.get_sample_size(format))
+    wf.setframerate(rate)
+    wf.writeframes(b''.join(frames))
+    wf.close()
+    print(f"Audio recording saved as {output_filename}")
+
+def process_command(user_input):
+    if user_input.startswith("send whatsapp"):
+        _, number, message = user_input.split(" ", 2)
+        send_whatsapp_message(number, message)
+    elif user_input.startswith("open "):
+        app_name = user_input[5:]
+        open_application(app_name)
+    elif user_input in ["shutdown", "restart", "logout"]:
+        control_system(user_input)
+    elif user_input == "read emails":
+        read_emails()
+    elif user_input.startswith("record screen"):
+        record_screen()
+    elif user_input.startswith("record audio"):
+        record_audio()
+    else:
+        print("Command not recognized.")
