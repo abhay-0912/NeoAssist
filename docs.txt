@@ -1,2 +1,3 @@
 Here is the full plan for this AI NEOASSIST
 adding ai agents to make the task done
+trying to go with llms
