@@ -1,0 +1,19 @@
+2025-04-06 20:11:12,540 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:12:01,338 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:22:11,641 - INFO - NeoAssist started
+2025-04-06 20:22:11,641 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:27:10,741 - INFO - NeoAssist started
+2025-04-06 20:27:10,742 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:31:46,329 - INFO - NeoAssist started
+2025-04-06 20:31:46,329 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:33:52,780 - INFO - NeoAssist started
+2025-04-06 20:33:52,780 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:35:33,494 - INFO - NeoAssist started
+2025-04-06 20:35:33,495 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:37:47,170 - INFO - NeoAssist started
+2025-04-06 20:37:47,170 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:38:50,058 - INFO - NeoAssist started
+2025-04-06 20:38:50,058 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:47:49,410 - INFO - NeoAssist started
+2025-04-06 20:47:49,410 - ERROR - Error in wake word listener: create() missing 1 required positional argument: 'access_key'
+2025-04-06 20:48:07,775 - INFO - Opened application: notepad

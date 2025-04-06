@@ -1,0 +1,14 @@
+2025-04-06 19:46:36,318 - INFO - Could not import comtypes.gen, trying to create it.
+2025-04-06 19:46:36,326 - INFO - Created comtypes.gen directory: 'C:\Users\absri\Documents\GitHub\NeoAssist\.venv\Lib\site-packages\comtypes\gen'
+2025-04-06 19:46:36,327 - INFO - Writing __init__.py file: 'C:\Users\absri\Documents\GitHub\NeoAssist\.venv\Lib\site-packages\comtypes\gen\__init__.py'
+2025-04-06 19:46:36,362 - INFO - Using writeable comtypes cache directory: 'C:\Users\absri\Documents\GitHub\NeoAssist\.venv\Lib\site-packages\comtypes\gen'
+2025-04-06 19:46:36,393 - INFO - Could not import comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4: No module named 'comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4'
+2025-04-06 19:46:36,399 - INFO - # Generating comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4
+2025-04-06 19:46:36,533 - INFO - # Generating comtypes.gen.SpeechLib
+2025-04-06 19:46:36,546 - INFO - Could not import comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0: No module named 'comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0'
+2025-04-06 19:46:36,547 - INFO - # Generating comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0
+2025-04-06 19:46:36,562 - INFO - # Generating comtypes.gen.stdole
+2025-04-06 19:51:36,407 - INFO - Imported existing <module 'comtypes.gen' from 'C:\\Users\\absri\\Documents\\GitHub\\NeoAssist\\.venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-04-06 19:51:36,407 - INFO - Using writeable comtypes cache directory: 'C:\Users\absri\Documents\GitHub\NeoAssist\.venv\Lib\site-packages\comtypes\gen'
+2025-04-06 19:52:20,381 - INFO - Imported existing <module 'comtypes.gen' from 'C:\\Users\\absri\\Documents\\GitHub\\NeoAssist\\.venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-04-06 19:52:20,381 - INFO - Using writeable comtypes cache directory: 'C:\Users\absri\Documents\GitHub\NeoAssist\.venv\Lib\site-packages\comtypes\gen'
