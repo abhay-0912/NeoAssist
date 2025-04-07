@@ -5,6 +5,7 @@ from .voice import speak
 from .logger import logger
 from serpapi import GoogleSearch
 from .config import SERPAPI_KEY
+import webbrowser
 
 def web_search(query):
     try:
@@ -68,6 +69,7 @@ def open_application(app_name):
         else:
             speak(f"Application {app_name} not supported yet.")
             print(colored(f"Application '{app_name}' not supported yet.", "red"))
+            logger.warning(f"Unsupported application: {app_name}")
         logger.info(f"Opened application: {app_name}")
     except Exception as e:
         logger.error(f"Error opening application {app_name}: {e}")
@@ -83,6 +85,28 @@ def control_system(command):
         else:
             speak("Unknown system command.")
             print(colored("Unknown system command.", "red"))
+            logger.warning(f"Unknown system command: {command}")
         logger.info(f"System control command executed: {command}")
     except Exception as e:
         logger.error(f"Error executing system command {command}: {e}")
+
+def process_command(command):
+    """
+    Process the given command and execute the appropriate action.
+    """
+    if command == "hello":
+        print("👋 Hello! How can I assist you?")
+    elif command == "time":
+        from datetime import datetime
+        current_time = datetime.now().strftime("%H:%M:%S")
+        print(f"⏰ The current time is {current_time}.")
+    elif command.startswith("search for"):
+        # Extract the search query and open it in the browser
+        query = command.replace("search for", "").strip()
+        if query:
+            print(f"🔍 Searching for: {query}")
+            webbrowser.open(f"https://www.google.com/search?q={query}")
+        else:
+            print("🤔 Please specify what you want to search for.")
+    else:
+        print(f"🤔 Sorry, I don't understand the command: {command}")

@@ -17,3 +17,4 @@ def search_google(query):
     except Exception as e:
         speak("There was an error searching Google.")
         print(f"⚠️ SerpApi error: {e}")
+        logger.error(f"Google search error: {e}")

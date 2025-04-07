@@ -12,6 +12,10 @@ def main():
         speak("How can I help you?")
         command = listen()
         if command:
+            if command in ["exit", "quit"]:
+                speak("Goodbye!")
+                logger.info("NeoAssist stopped by user.")
+                break
             process_command(command)
 
 if __name__ == "__main__":

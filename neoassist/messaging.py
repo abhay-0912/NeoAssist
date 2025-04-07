@@ -16,7 +16,8 @@ def send_whatsapp_message(to_number, message):
         speak("WhatsApp message sent successfully!")
         print(colored("WhatsApp message sent successfully!", "green"))
         logger.info(f"WhatsApp message sent to {to_number}")
+        logger.info(f"Message SID: {message.sid}")
     except Exception as e:
         logger.error(f"Error sending WhatsApp message: {e}")
         print(colored("Error sending WhatsApp message:", "red"), e)
-        speak("Error sending WhatsApp message")
+        speak("Error sending WhatsApp message.")
